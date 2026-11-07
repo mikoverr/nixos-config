@@ -88,7 +88,7 @@ git pull --rebase origin main
 > [!WARNING]
 > You will most likely need to resolve merge conflicts.
 
-> [!INFO]
+> [!NOTE]
 > The files `.installed_host` and `hardware-configuration.nix` are not affected as they are registered in `.gitignore'.
 
 ---
