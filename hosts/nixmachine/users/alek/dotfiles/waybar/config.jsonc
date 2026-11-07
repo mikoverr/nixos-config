@@ -1,0 +1,159 @@
+{
+  "layer": "top",
+  "output": "eDP-1",
+  "position": "top",
+  "height": 32,
+  "margin": "8px 10px 0px 10px",
+  "spacing": 5,
+
+  "modules-left": [
+    "clock",
+    "hyprland/window"
+  ],
+  "modules-center": [
+    "hyprland/workspaces"
+  ],
+  "modules-right": [
+    "tray",
+    "group/power",
+    "group/connections",
+    "group/sliders",
+    "hyprland/language"
+  ],
+
+  "clock": {
+    "format": "{:%R}",
+    "format-alt": "{:%d %b %Y (%d.%m.%Y)}",
+    "tooltip": false
+  },
+
+  "hyprland/window": {
+    "format": "{title}",
+    "max-length": 25,
+    "separate-outputs": true,
+    "rewrite": {
+      "": "Hypr"
+    }
+  },
+
+  "hyprland/workspaces": {
+    "format": "{id} {windows}",
+    "window-rewrite-default": "󰘔",
+    "window-rewrite": {
+      "class<firefox>": "",
+      "class<kitty>": ""
+    }
+  },
+
+  "tray": {
+    "icon-size": 14,
+    "spacing": 8
+  },
+  "group/power": {
+    "orientation": "horizontal",
+    "modules": ["battery", "power-profiles-daemon"]
+  },
+ "battery": {
+    "states": {
+        "warning": 30,
+        "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󱘖 {capacity}%",
+    "format-full": "󰁹 {capacity}%",
+    "format-icons": {
+      "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+      "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+    },
+    "tooltip-format": "Time: {timeTo}\nPower: {power}W",
+    "events": {
+      "on-discharging": "hyprctl notify 4 3000 'rgb(888888)' 'Питание отключено'",
+      "on-charging": "hyprctl notify 4 3000 'rgb(bbbbbb)' 'Питание подключено'",
+      "on-discharging-warning": "hyprctl notify 2 5000 'rgb(bbbbbb)' 'Низкий заряд: {capacity}%'",
+      "on-discharging-critical": "hyprctl notify 3 5000 'rgb(ff7777)' 'Критический заряд: {capacity}%'",
+      "on-charging-100": "hyprctl notify 4 5000 'rgb(e3e3e3)' 'Батарея заряжена'"
+    }
+  },
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "format-icons": {
+      "default": "",
+      "performance": "",
+      "balanced": " ",
+      "power-saver": " "
+    }
+  },
+  "group/connections": {
+    "orientation": "horizontal",
+    "modules": ["network", "bluetooth"]
+  },
+  "network": {
+    "interval": 5,
+    "format-wifi": "",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀 (No IP)",
+    "format-disconnected": "󰖪",
+    "format-disabled": "󰖪",
+    "tooltip-format-wifi": "SSID: {essid} ({signalStrength}%)\nInterface: {ifname}\nIP: {ipaddr}\n\n⬆ {bandwidthUpBytesCompact} ⬇ {bandwidthDownBytesCompact}",
+    // "tooltip-format-ethernet": "Interface: {ifname}\nLink Speed: {linkSpeed}Gbps\nIP: {ipaddr}\n\n⬆ {bandwidthUpBytesCompact} ⬇ {bandwidthDownBytesCompact}",
+    "tooltip-format-disconnected": "Disconnected",
+    "tooltip-format-disabled": "Disabled",
+    "on-click": "nm-connection-editor"
+  },
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-on": "",
+    "format-connected": " {device_alias}",
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+    "on-click": "blueman-manager"
+  },
+  "group/sliders": {
+    "orientation": "horizontal",
+    "modules": ["pulseaudio", "pulseaudio#mic", "backlight"]
+  },
+  "pulseaudio": {
+	"format": "{icon} {volume}%",
+	"format-bluetooth": "{icon} {volume}%",
+	"format-muted": "",
+	"format-icons": {
+	  "alsa_output.pci-0000_00_1f.3.analog-stereo": "",
+	  "alsa_output.pci-0000_00_1f.3.analog-stereo-muted": "",
+	  "headphone": "",
+	  "hands-free": "󰂑",
+	  "headset": "󰂑",
+	  "phone": "",
+	  "phone-muted": "",
+	  "portable": "",
+	  "car": "",
+	  "default": ["", ""]
+	},
+	"reverse-scrolling": true,
+	"scroll-step": 5,
+	"smooth-scrolling-threshold": 2,
+	"on-click": "pavucontrol"
+  },
+  "pulseaudio#mic": {
+    "format": " {volume}%",
+    "format-source-muted": "",
+    "source": "default"
+  },
+  "backlight": {
+	"format": "{icon} {percent}%",
+	"format-icons": ["", ""],
+	"reverse-scrolling": true,
+	"scroll-step": 5,
+	"smooth-scrolling-threshold": 2
+  },
+  "hyprland/language": {
+    "format": "{}",
+    "format-en": "🏳️‍🌈",
+    "format-ru": "🍸"
+  }
+}

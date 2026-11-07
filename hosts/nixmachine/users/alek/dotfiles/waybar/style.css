@@ -1,0 +1,117 @@
+/* Graphite Dark palete */
+@define-color bg-darker    #202020;
+@define-color bg-normal    #242424;
+@define-color bg-surface   #2c2c2c;
+@define-color border-col   #3c3c3c;
+@define-color fg-main      #e0e0e0;
+@define-color fg-muted     #8a8a8a;
+@define-color accent       #8ab4f8;
+@define-color urgent       #f28b82;
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 0;
+}
+
+window#waybar {
+  background: transparent;
+  color: @fg-main;
+}
+
+#clock,
+#window,
+#workspaces,
+#tray,
+#language,
+.modules-right > widget > box {
+  background: @bg-normal;
+  border: 3px solid @border-col;
+  border-radius: 6px;
+  padding: 0 8px;
+}
+
+#clock:hover {
+  color: @fg-main;
+  background: @bg-surface;
+}
+
+#window {
+  color: @fg-muted;
+}
+
+#workspaces button {
+  color: @fg-muted;
+  background: transparent;
+}
+
+#workspaces button.active {
+  color: @fg-main;
+  background: @bg-surface;
+}
+
+#workspaces button:hover {
+  color: @accent;
+}
+
+#battery {
+  color: @fg-main;
+}
+
+#battery.charging,
+#battery.plugged,
+#battery.full {
+  color: @fg-main;
+}
+
+#battery.warning:not(.charging) {
+  color: @fg-muted;
+}
+
+#battery.critical:not(.charging) {
+  color: @urgent;
+}
+
+#power-profiles-daemon:hover,
+#network:hover,
+#bluetooth:hover,
+#language:hover {
+  color: @accent;
+}
+
+#network,
+#bluetooth,
+#pulseaudio,
+#pulseaudio.bluetooth {
+  color: @fg-main;
+}
+
+#network.disconnected,
+#network.disabled,
+#bluetooth.off,
+#bluetooth.disabled,
+#pulseaudio.muted,
+#pulseaudio.sink-muted,
+#pulseaudio.source-muted {
+  color: @fg-muted;
+}
+
+#battery, #power-profiles-daemon,
+#network, #bluetooth,
+#pulseaudio, #backlight {
+  padding: 0 6px;
+}
+
+tooltip {
+  background: @bg-darker;
+  border: 1px solid @border-col;
+  border-radius: 8px;
+}
+
+tooltip label {
+  color: @fg-main;
+  padding: 4px;
+}

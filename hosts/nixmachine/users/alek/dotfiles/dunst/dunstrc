@@ -1,0 +1,28 @@
+[global]
+    width = 300
+    height = 100
+    offset = 10x10
+    origin = top-right
+    font = Inter 10
+    corner_radius = 6
+    frame_width = 3
+    frame_color = "#3c3c3c"
+    separator_color = frame
+    background = "#1e1e2e"
+    foreground = "#cdd6f4"
+
+[urgency_low]
+    background = "#202020"
+    foreground = "#8a8a8a"
+    timeout = 5
+
+[urgency_normal]
+    background = "#242424"
+    foreground = "#e0e0e0"
+    timeout = 5
+
+[urgency_critical]
+    background = "#242424"
+    foreground = "#f28b82"
+    frame_color = "#f28b82"
+    timeout = 0

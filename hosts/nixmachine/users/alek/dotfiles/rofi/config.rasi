@@ -1,0 +1,29 @@
+configuration {
+  modi: "drun,run,window";
+  font: "Inter 12";
+  show-icons: true;
+  display-drun: "Apps";
+}
+
+* {
+    bg:          #242424;
+    bg-alt:      #2c2c2c;
+    fg:          #e0e0e0;
+    fg-muted:    #8a8a8a;
+    border-col:  #3c3c3c;
+
+    background-color: @bg;
+    text-color:       @fg;
+}
+
+window {
+    background-color: @bg;
+    border:           2px;
+    border-color:     @border-col;
+    border-radius:    12px;
+}
+
+element selected.normal {
+    background-color: @bg-alt;
+    text-color:       #ffffff;
+}

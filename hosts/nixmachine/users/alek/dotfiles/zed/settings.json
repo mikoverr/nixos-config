@@ -1,0 +1,119 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "proxy": "",
+  "calls": {
+    "mute_on_join": true
+  },
+  "collaboration_panel": {
+    "default_width": 320.0,
+    "button": false
+  },
+  "debugger": {
+    "dock": "bottom"
+  },
+  "git_panel": {
+    "status_style": "icon",
+    "default_width": 320.0,
+    "dock": "left"
+  },
+  "outline_panel": {
+    "default_width": 320.0,
+    "dock": "left",
+    "button": true
+  },
+  "window_decorations": "client",
+  "bottom_dock_layout": "contained",
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+  "tab_bar": {
+    "show_pinned_tabs_in_separate_row": false,
+    "show_tab_bar_buttons": true,
+    "show_nav_history_buttons": false,
+    "show": true
+  },
+  "title_bar": {
+    "button_layout": "",
+    "show_menus": false,
+    "show_user_picture": false,
+    "show_user_menu": true,
+    "show_onboarding_banner": false,
+    "show_sign_in": false,
+    "show_branch_status_icon": true
+  },
+  "status_bar": {
+    "line_endings_button": false,
+    "cursor_position_button": true,
+    "active_encoding_button": "enabled"
+  },
+  "project_panel": {
+    "bold_folder_labels": false,
+    "default_width": 320.0,
+    "dock": "left",
+    "button": true
+  },
+  "languages": {
+    "CSS": {
+      "tab_size": 2
+    },
+    "JavaScript": {
+      "tab_size": 2
+    }
+  },
+  "show_completion_documentation": true,
+  "show_completions_on_input": false,
+  "autosave": "on_focus_change",
+  "default_open_behavior": "new_window",
+  "cli_default_open_behavior": "new_window",
+  "base_keymap": "None",
+  "cursor_shape": "block",
+  "ui_font_family": "Hack",
+  "buffer_font_family": "Hack",
+  "icon_theme": "Material Icon Theme",
+  "auto_update": true,
+  "agent": {
+    "sandbox_permissions": {
+      "allow_unsandboxed": false
+    },
+    "limit_content_width": false,
+    "thinking_display": "always_collapsed",
+    "play_sound_when_agent_done": "when_hidden",
+    "enable_feedback": false,
+    "max_content_width": 640.0,
+    "default_width": 320.0,
+    "dock": "right",
+    "default_model": {
+      "provider": "ollama",
+      "model": "qwen3:8b",
+      "enable_thinking": false
+    },
+    "sidebar_side": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "agent_servers": {
+    
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "ui_font_size": 15.0,
+  "buffer_font_size": 15,
+  "theme": "Gruvbox Dark Hard",
+  "terminal": {
+    "shell": "system"
+  },
+}

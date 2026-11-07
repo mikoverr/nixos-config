@@ -1,0 +1,151 @@
+[
+  // 1. GLOBAL ACTIONS (Confirmation in menus, windows, and system hotkeys)
+  {
+    "bindings": {
+      "enter": "menu::Confirm",
+      "ctrl-enter": "menu::SecondaryConfirm",
+      "ctrl-s": "workspace::Save",
+      "ctrl-shift-s": "workspace::SaveAs",
+      "ctrl-shift-p": "command_palette::Toggle",
+      "ctrl-p": "file_finder::Toggle",
+      "ctrl-,": "zed::OpenSettings",
+      "ctrl-q": "zed::Quit",
+      "ctrl-`": "terminal_panel::Toggle",
+      "ctrl-b": "workspace::ToggleLeftDock",
+      "ctrl-f": "buffer_search::Deploy"
+    }
+  },
+
+  // 2. BASIC EDITOR (Symbols, Movement, Clipboard)
+  {
+    "context": "Editor",
+    "bindings": {
+      "backspace": "editor::Backspace",
+      "delete": "editor::Delete",
+      "tab": "editor::Tab",
+      "escape": "editor::Cancel",
+      "up": "editor::MoveUp",
+      "down": "editor::MoveDown",
+      "left": "editor::MoveLeft",
+      "right": "editor::MoveRight",
+
+      "ctrl-c": "editor::Copy",
+      "ctrl-v": "editor::Paste",
+      "ctrl-x": "editor::Cut",
+      "ctrl-z": "editor::Undo",
+      "ctrl-shift-z": "editor::Redo",
+      "ctrl-a": "editor::SelectAll",
+      "ctrl-l": "editor::SelectLine",
+      "ctrl-/": "editor::ToggleComments",
+
+      "alt-up": "editor::MoveLineUp",
+      "alt-down": "editor::MoveLineDown",
+      "ctrl-d": "editor::SelectNext",
+
+      // LSP AND SPLIT SCREEN
+      "f2": "editor::Rename",
+      "f12": "editor::GoToDefinition",
+      "ctrl-shift-i": "editor::Format",
+      "ctrl-.": "editor::ToggleCodeActions",
+      "ctrl-\\": "pane::SplitRight"
+    }
+  },
+
+  // 3. FULL-SIZE CODE EDITOR
+  {
+    "context": "Editor && mode == full",
+    "bindings": {
+      "enter": "editor::Newline",
+      "shift-enter": "editor::Newline",
+      "ctrl-enter": "assistant::InlineAssist",
+      "ctrl-?": "assistant::ToggleFocus"
+    }
+  },
+
+  // 4. CONTEXTUAL ENTER FOR SPECIAL CASES
+  {
+    "context": "Editor && renaming",
+    "bindings": {
+      "enter": "editor::ConfirmRename"
+    }
+  },
+  {
+    "context": "Editor && showing_completions",
+    "bindings": {
+      "enter": "editor::ConfirmCompletion",
+      "shift-enter": "editor::ConfirmCompletionReplace",
+      "tab": "editor::ComposeCompletion"
+    }
+  },
+  {
+    "context": "Editor && showing_code_actions",
+    "bindings": {
+      "enter": "editor::ConfirmCodeAction"
+    }
+  },
+  {
+    "context": "Picker > Editor",
+    "bindings": {
+      "tab": "picker::ConfirmCompletion",
+      "alt-enter": ["picker::ConfirmInput", { "secondary": false }]
+    }
+  },
+
+  // 5. TABS
+  {
+    "context": "Pane",
+    "bindings": {
+      "ctrl-w": "pane::CloseActiveItem",
+      "ctrl-tab": "pane::ActivateNextItem",
+      "ctrl-shift-tab": "pane::ActivatePreviousItem",
+      "alt-1": ["pane::ActivateItem", 0],
+      "alt-2": ["pane::ActivateItem", 1],
+      "alt-3": ["pane::ActivateItem", 2],
+      "alt-4": ["pane::ActivateItem", 3]
+    }
+  },
+
+  // 6. TERMINAL
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-shift-c": "terminal::Copy",
+      "ctrl-shift-v": "terminal::Paste",
+      "ctrl-shift-a": "terminal::SelectAll"
+    }
+  },
+
+  // 7. FILE TREE / PROJECT PANEL
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "ctrl-c": "project_panel::Copy",
+      "ctrl-x": "project_panel::Cut",
+      "ctrl-v": "project_panel::Paste",
+      "ctrl-z": "project_panel::Undo",
+      "ctrl-shift-z": "project_panel::Redo",
+      "ctrl-r": "project_panel::Rename",
+      "f2": "project_panel::Rename",
+      "delete": "project_panel::Trash",
+      "shift-delete": "project_panel::Delete",
+      "ctrl-n": "project_panel::NewFile",
+      "ctrl-shift-n": "project_panel::NewDirectory"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-shift-b": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-alt-b": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "shift-tab": "editor::Backtab"
+    }
+  }
+]
