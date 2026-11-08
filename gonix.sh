@@ -7,6 +7,7 @@ set -euo pipefail
 BASE_CONFIG_DIR="/etc/nixos"
 THIS_CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HOST_FILE="$THIS_CONFIG_DIR/.installed_host"
+FINAL_TARGET_HOST=""
 
 # Colors for logs
 GREEN='\033[0;32m'
@@ -110,6 +111,134 @@ select_host_interactive() {
             log_error "Invalid selection. Please enter a number between 1 and ${#available_hosts[@]}." >&2
         fi
     done
+}
+
+# ==============================================================================
+# CUSTOMIZATION LOGIC
+# ==============================================================================
+customize_installation() {
+    local initial_host="$1"
+    local hosts_dir="$THIS_CONFIG_DIR/hosts"
+    local current_host="$initial_host"
+
+    echo ""
+    log_info "=== PRE-INSTALLATION CUSTOMIZATION ==="
+
+    # --- 1. Update System Version (Channels) ---
+    local installer_version
+    installer_version=$(nixos-version | grep -oE '^[0-9]+\.[0-9]+' || true)
+
+    if [[ -z "$installer_version" ]]; then
+        log_warn "Could not auto-detect NixOS version."
+        read -rp "Enter NixOS version to use (e.g., 26.05): " installer_version
+    else
+        log_info "Detected NixOS version: $installer_version"
+    fi
+
+    read -rp "Do you want to update channel versions in config files to $installer_version? (y/N): " update_ver
+    if [[ "$update_ver" =~ ^[Yy]$ ]]; then
+        log_info "Updating flake.nix channels to $installer_version..."
+        # Replacing nixos-XX.YY and release-XX.YY in flake.nix
+        sed -i -E "s|nixos-[0-9]+\.[0-9]+|nixos-${installer_version}|g" "$THIS_CONFIG_DIR/flake.nix"
+        sed -i -E "s|release-[0-9]+\.[0-9]+|release-${installer_version}|g" "$THIS_CONFIG_DIR/flake.nix"
+
+        log_info "Updating system.stateVersion in configuration.nix..."
+        sed -i -E "s|system\.stateVersion = \"[0-9]+\.[0-9]+\";|system.stateVersion = \"${installer_version}\";|g" \
+            "$hosts_dir/$current_host/users/root/configuration/configuration.nix"
+
+        # Updating flake.lock for new channels
+        log_info "Updating flake.lock (this may take a minute)..."
+        (cd "$THIS_CONFIG_DIR" && nix flake update)
+
+        log_success "Versions updated to $installer_version."
+    fi
+
+    # --- 2. Rename Host (Files first) ---
+    local new_host
+    read -rp "Enter a custom hostname (or press Enter to keep '$current_host'): " new_host
+
+    if [[ -n "$new_host" && "$new_host" != "$current_host" ]]; then
+        if [[ ! "$new_host" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+            log_error "Invalid hostname. Use only letters, numbers, dashes, and underscores."
+            exit 1
+        fi
+
+        log_info "Updating hostname to '$new_host' in files..."
+        # Updating flake.nix
+        sed -i "s/\b$current_host\b/$new_host/g" "$THIS_CONFIG_DIR/flake.nix"
+
+        # Updating networking.nix
+        local net_nix="$hosts_dir/$current_host/users/root/configuration/modules/networking.nix"
+        if [[ -f "$net_nix" ]]; then
+            sed -i "s/\b$current_host\b/$new_host/g" "$net_nix"
+        fi
+
+        # --- 3. Rename Host (Folder second) ---
+        log_info "Renaming host directory '$current_host' -> '$new_host'..."
+        mv "$hosts_dir/$current_host" "$hosts_dir/$new_host"
+
+        current_host="$new_host"
+        log_success "Host renamed to '$current_host'."
+    fi
+
+    # --- 4. Rename Users (Files first) ---
+    local users_dir="$hosts_dir/$current_host/users"
+    # An array for storing pairs of "old_name:new_name" to rename folders after
+    local users_to_rename=()
+
+    if [[ -d "$users_dir" ]]; then
+        for u_path in "$users_dir"/*; do
+            [[ -d "$u_path" ]] || continue
+            local old_user
+            old_user=$(basename "$u_path")
+
+            if [[ "$old_user" == "root" ]]; then
+                continue
+            fi
+
+            local new_user
+            read -rp "Enter a new name for user '$old_user' (or press Enter to keep): " new_user
+
+            if [[ -n "$new_user" && "$new_user" != "$old_user" ]]; then
+                if [[ ! "$new_user" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+                    log_error "Invalid username. Use only letters, numbers, dashes, and underscores."
+                    exit 1
+                fi
+
+                log_info "Updating username '$old_user' -> '$new_user' in targeted files..."
+
+                # 1. root/configuration/modules/users.nix
+                local root_users_nix="$users_dir/root/configuration/modules/users.nix"
+                if [[ -f "$root_users_nix" ]]; then
+                    sed -i "s/\b$old_user\b/$new_user/g" "$root_users_nix"
+                fi
+
+                # 2. <username>/home-manager/home.nix
+                local hm_home_nix="$u_path/home-manager/home.nix"
+                if [[ -f "$hm_home_nix" ]]; then
+                    sed -i "s/\b$old_user\b/$new_user/g" "$hm_home_nix"
+                fi
+
+                # Saving folders for renaming
+                users_to_rename+=("$old_user:$new_user")
+                log_success "User config updated to '$new_user'."
+            fi
+        done
+    fi
+
+    # --- 5. Rename Users (Folders second) ---
+    if [[ ${#users_to_rename[@]} -gt 0 ]]; then
+        for pair in "${users_to_rename[@]}"; do
+            local old_name="${pair%%:*}"
+            local new_name="${pair##*:}"
+
+            log_info "Renaming user directory '$old_name' -> '$new_name'..."
+            mv "$users_dir/$old_name" "$users_dir/$new_name"
+        done
+    fi
+
+    echo ""
+    FINAL_TARGET_HOST="$current_host"
 }
 
 # ==============================================================================
@@ -289,6 +418,10 @@ do_install() {
     local target_host
     target_host=$(select_host_interactive)
     log_info "Selected host: $target_host"
+
+    # --- Customization step ---
+    customize_installation "$target_host"
+    target_host="$FINAL_TARGET_HOST"
 
     if [[ -d "/mnt/etc" ]]; then
         do_fresh_install "$target_host"
