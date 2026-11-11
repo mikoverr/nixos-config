@@ -8,6 +8,7 @@
     ./modules/boot.nix
     ./modules/networking.nix
     ./modules/users.nix
+    ./modules/home-manager.nix
     ./modules/services.nix
     ./modules/programs.nix
     ./modules/packages.nix
