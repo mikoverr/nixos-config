@@ -11,7 +11,7 @@
     ./modules/services.nix
     ./modules/programs.nix
     ./modules/packages.nix
-    ./modules/locate.nix
+    ./modules/locale.nix
     ./modules/fonts.nix
     ./modules/environment.nix
   ];
