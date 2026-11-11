@@ -59,6 +59,30 @@ fix_repo_permissions() {
     done
 }
 
+manage_hw_config_git() {
+    local action="$1" # add or rm
+
+    # Find all hardware-configuration.nix files across all hosts
+    local files
+    files=$(find "$THIS_CONFIG_DIR/hosts" -path "*/users/root/configuration/hardware-configuration.nix" -type f 2>/dev/null || true)
+
+    if [[ -z "$files" ]]; then
+        return 0
+    fi
+
+    if [[ "$action" == "add" ]]; then
+        log_info "Force-adding hardware-configuration.nix to Git index for Flakes..."
+        echo "$files" | while read -r file; do
+            git -C "$THIS_CONFIG_DIR" add -f "$file"
+        done
+    elif [[ "$action" == "rm" ]]; then
+        log_info "Removing hardware-configuration.nix from Git index (keeping it untracked)..."
+        echo "$files" | while read -r file; do
+            git -C "$THIS_CONFIG_DIR" rm --cached "$file" &>/dev/null || true
+        done
+    fi
+}
+
 require_not_etc_nixos() {
     if [[ "$THIS_CONFIG_DIR" == "$BASE_CONFIG_DIR" || "$THIS_CONFIG_DIR" == "$BASE_CONFIG_DIR/"* ]]; then
         log_error "The repository cannot be located inside /etc/nixos."
@@ -363,7 +387,19 @@ do_fresh_install() {
     cd "$THIS_CONFIG_DIR"
     git add -A || true
 
-    sudo nixos-install --flake "$THIS_CONFIG_DIR#$target_host" --option experimental-features "nix-command flakes"
+    # --- Force add hw config ---
+    manage_hw_config_git "add"
+
+    local build_status=0
+    sudo nixos-install --flake "$THIS_CONFIG_DIR#$target_host" --option experimental-features "nix-command flakes" || build_status=$?
+
+    # --- Remove from cache ---
+    manage_hw_config_git "rm"
+
+    if [[ $build_status -ne 0 ]]; then
+        log_error "Fresh installation failed."
+        exit $build_status
+    fi
 
     echo "$target_host" > "$HOST_FILE"
     log_success "Fresh installation complete! Reboot to enter your new system."
@@ -405,7 +441,20 @@ do_reinstall() {
     log_info "Running initial nixos-rebuild switch..."
     cd "$THIS_CONFIG_DIR"
     git add -A || true
-    sudo nixos-rebuild switch --flake "$THIS_CONFIG_DIR#$target_host" --option experimental-features "nix-command flakes"
+
+    # --- Force add hw config ---
+    manage_hw_config_git "add"
+
+    local build_status=0
+    sudo nixos-rebuild switch --flake "$THIS_CONFIG_DIR#$target_host" --option experimental-features "nix-command flakes" || build_status=$?
+
+    # --- Remove from cache ---
+    manage_hw_config_git "rm"
+
+    if [[ $build_status -ne 0 ]]; then
+        log_error "Reinstall failed."
+        exit $build_status
+    fi
 
     echo "$target_host" > "$HOST_FILE"
     log_success "Installation complete! Host '$target_host' saved."
@@ -531,7 +580,21 @@ do_rebuild() {
         log_info "Starting NixOS rebuild for host '$current_host'..."
         cd "$THIS_CONFIG_DIR"
         git add -A || true
-        sudo nixos-rebuild switch --flake "$THIS_CONFIG_DIR#$current_host" --option experimental-features "nix-command flakes"
+
+        # --- Force add hw config ---
+        manage_hw_config_git "add"
+
+        local build_status=0
+        sudo nixos-rebuild switch --flake "$THIS_CONFIG_DIR#$current_host" --option experimental-features "nix-command flakes" || build_status=$?
+
+        # --- Remove from cache ---
+        manage_hw_config_git "rm"
+
+        if [[ $build_status -ne 0 ]]; then
+            log_error "NixOS rebuild failed."
+            exit $build_status
+        fi
+
         log_success "System successfully rebuilt!"
     fi
 
