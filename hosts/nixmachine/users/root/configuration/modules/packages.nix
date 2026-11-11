@@ -17,6 +17,7 @@
     bzip2
 
     # dev (must to be in root)
+    mesa # for OpenGL
     android-tools
     go
     cmake
