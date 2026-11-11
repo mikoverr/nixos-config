@@ -5,7 +5,7 @@ set -euo pipefail
 # CONFIGURATION & VARIABLES
 # ==============================================================================
 BASE_CONFIG_DIR="/etc/nixos"
-THIS_CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+THIS_CONFIG_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 HOST_FILE="$THIS_CONFIG_DIR/.installed_host"
 FINAL_TARGET_HOST=""
 
