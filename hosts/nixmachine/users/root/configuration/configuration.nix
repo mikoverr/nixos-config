@@ -6,7 +6,7 @@
     ./modules/hardware.nix
     ./modules/zram-swap.nix
     ./modules/boot.nix
-    ./modules/host.nix
+    ./modules/networking.nix
     ./modules/users.nix
     ./modules/services.nix
     ./modules/programs.nix
