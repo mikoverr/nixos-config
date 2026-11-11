@@ -1,6 +1,9 @@
 { ... }:
 {
   services = {
+    # legacy dbus-daemon more stable in my nix
+    dbus.implementation = "dbus";
+
     # the x11 config that only dm needsneeded for DM
     xserver = {
       enable = true;
