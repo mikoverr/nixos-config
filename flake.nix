@@ -29,6 +29,24 @@
           }
         ];
       };
+
+      "server" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+
+        modules = [
+          ./hosts/server/users/root/configuration/configuration.nix
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+
+            home-manager.backupFileExtension = "hm-backup";
+
+            home-manager.users.admin = import ./hosts/server/users/admin/home-manager/home.nix;
+          }
+        ];
+      };
     };
   };
 }
