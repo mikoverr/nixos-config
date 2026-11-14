@@ -2,6 +2,7 @@
   environment.systemPackages = with pkgs; [
     vim
     git
+    iptables
     curl
     wget
     htop

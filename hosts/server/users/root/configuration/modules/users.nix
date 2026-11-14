@@ -1,5 +1,7 @@
 { ... }:
 {
+  users.mutableUsers = true; # allows password change via `passwd`
+
   users.users.admin = {
     isNormalUser = true;
     hashedPassword = "$6$...hash..."; # EDIT
