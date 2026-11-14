@@ -17,3 +17,6 @@ Before deploying, edit the following files in `hosts/server/`:
 *   **Interface:** Change `iface` to your network interface name (find it with `ip a`, e.g., `eth0`, `ens3`, `enp1s0`).
 *   **Static IP (Default):** Fill in `address`, `prefixLength`, and `via` (gateway) according to your VPS provider's details. Also, set your preferred `nameservers`.
 *   **DHCP:** If your VPS provider automatically assigns IPs, comment out the `interfaces` block and uncomment `useDHCP = true;`.
+
+### 3. Bootloader Configuration (`users/root/configuration/modules/boot.nix`)
+*   **Boot Device:** Set `boot.loader.grub.device` to your actual system disk (e.g., `"/dev/vda"` or `"/dev/sda"`). You can find this in your VPS provider's control panel.
